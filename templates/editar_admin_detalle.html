@@ -1,0 +1,283 @@
+{% extends "layoutGerente.html" %}
+
+{% block title %}
+Editar Administrador
+{% endblock %}
+
+{% block main %}
+
+<style>
+    #sucursales-select:focus option:first-child {
+        display: none;
+    }
+</style>
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Editar Información Administrador</h1>
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            <strong>En esta sección puede editar la información del Administrador.</strong>
+        </div>
+        {% endif %}
+        <form method="post" id="formEditarAdmin">
+            <h4>Información del Administrador:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_CedulaAdministrador">
+                        <label for="CedulaAdministrador" class="form-label" >Número de cédula:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CedulaAdministrador" id="CedulaAdministrador" autocomplete="nope"
+                            value="{{ rows[0]['CedulaAdministrador'] }}" required>
+                            <input type="hidden" name="CedulaAdministradorOutput" id="CedulaAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese el formato correcto "000-000000-0000X"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_NombresAdministrador">
+                        <label for="NombresAdministrador" class="form-label">Nombres:</label>
+                        <div>
+                            <input type="text" class="form-control" name="NombresAdministrador" id="NombresAdministrador" autocomplete="nope"
+                            value="{{ rows[0]['NombresAdministrador'] }}" oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="NombresAdministradorOutput" id="NombresAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un nombre valido "Solo letras"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_ApellidosAdministrador">
+                        <label for="ApellidosAdministrador" class="form-label">Apellidos:</label>
+                        <div>
+                            <input type="text" class="form-control" name="ApellidosAdministrador" id="ApellidosAdministrador" autocomplete="nope"
+                            value="{{ rows[0]['ApellidosAdministrador'] }}" oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="ApellidosAdministradorOutput" id="ApellidosAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un apellido valido "Solo letras"</p>
+                    </div>
+                    <!--Te van a retornar el numero (value = numero) que equivale el IdSucursal en la base de datos-->
+                    <div class="mb-3">
+                        <label for="sucursal" class="form-label">Sucursal:</label>
+                        <select class="form-select" type="text" name="IdSucursal" id="sucursales-select">
+                            {% for i in range(1,12) %}
+
+                                {% if i == rows[0]['IdSucursal'] %}
+                                    <option value="{{ rows[0]['IdSucursal'] }}" selected>
+                                        {{nombre_sucursal}} {{direccion_sucursal}}
+                                    </option>
+                                {% endif %}
+                                
+                            {% endfor %}
+
+                            <option value="1">Mi Ranchito Rivas</option>
+                            <option value="2">Mi Ranchito Catarina</option>
+                            <option value="3">Mi Ranchito Masaya</option>
+                            <option value="4">Mi Ranchito Galerias</option>
+                            <option value="5">El Zocalo Masaya</option>
+                            <option value="6">El Zocalo Villa Fontana</option>
+                            <option value="7">El Zocalo Galerias</option>
+                            <option value="8">La Nani Cafe Rivas</option>
+                            <option value="9">La Nani Cafe Masaya</option>
+                            <option value="10">Setenta Grados Rivas</option>
+                            <option value="11">La Sureña Rivas</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    
+                    <div class="mb-3" id="grupo_CorreoAdministrador">
+                        <label for="CorreoAdministrador" class="form-label">Correo electrónico:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CorreoAdministrador" id="CorreoAdministrador" autocomplete="nope"
+                            value="{{rows[0]['CorreoAdministrador']}}" required>
+                            <input type="hidden" name="CorreoAdministradorOutput" id="CorreoAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un correo valido</p>
+                    </div>
+        
+                    <div class="mb-3" id="grupo_NumeroTelefonoAdministrador">
+                        <label for="NumeroTelefonoAdministrador" class="form-label">Teléfono (+505):</label>
+                        <div>
+                            <input type="text" class="form-control" name="NumeroTelefonoAdministrador" id="NumeroTelefonoAdministrador" autocomplete="nope"
+                            value="{{rows[0]['NumeroTelefonoAdministrador']}}" required>
+                            <input type="hidden" name="NumeroTelefonoAdministradorOutput" id="NumeroTelefonoAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese solo numeros</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="formulario__mensaje" id="formulario__mensaje" style="margin-bottom: 20px;">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+			</div>
+            <div>
+                <button id="botonEditarInformacion" style="margin-right: 10px;" type="button" class="btn btn-primary validate-before-submit">
+                    Editar Información
+                </button>
+                <a href="/dashboard">
+                    <button type="button" class="btn btn-secondary">Cancelar</button>
+                </a>
+            </div>
+        </form>
+        <br>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modalEditarForm" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalEditarLabel">Editar información del colaborador</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <!-- Contenido del modal -->
+                ¿Estas seguro que deseas editar la información de: <strong>{{ rows[0]['NombresAdministrador'] }}</strong>?
+            </div>
+            <div class="modal-footer">                
+                <button type="submit" class="btn btn-primary" onclick="document.getElementById('formEditarAdmin').submit()">Editar Información</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+<script>
+    const formulario = document.getElementById('formEditarAdmin');
+    const inputs = document.querySelectorAll('#formEditarAdmin input');
+    let cambiosRealizados = false;
+
+    const expresiones = {
+        cedula: /^[0-9A-Za-z\-]{15}[A-Z]$/, //letras, números y guion   
+        nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
+        apellidos: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
+        telefono: /^\d{8}$/, // 8 números solo números
+        correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
+    };
+
+    const campos = {
+        CedulaAdministrador: false,
+        NombresAdministrador: false,
+        ApellidosAdministrador: false,
+        NumeroTelefonoAdministrador: false,
+        CorreoAdministrador: false,
+    };
+
+    const validarFormulario = (e) => {
+        switch (e.target.name) {
+            case "CedulaAdministrador":
+                validarCampo(expresiones.cedula, e.target, 'CedulaAdministrador', 'CedulaAdministradorOutput');
+                break;
+            case "NombresAdministrador":
+                validarCampo(expresiones.nombre, e.target, 'NombresAdministrador', 'NombresAdministradorOutput');
+                break;
+            case "ApellidosAdministrador":
+                validarCampo(expresiones.apellidos, e.target, 'ApellidosAdministrador', 'ApellidosAdministradorOutput');
+                break;
+            case "NumeroTelefonoAdministrador":
+                validarCampo(expresiones.telefono, e.target, 'NumeroTelefonoAdministrador', 'NumeroTelefonoAdministradorOutput');
+                break;
+            case "CorreoAdministrador":
+                validarCampo(expresiones.correo, e.target, 'CorreoAdministrador', 'CorreoAdministradorOutput');
+                break;
+        }
+    };
+
+    const validarCampo = (expresion, input, campo, campoOutput) => {
+        if (expresion.test(input.value)) {
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.remove('formulario__input-error-activo');
+            campos[campo] = true;
+            var campoPost = document.getElementById(campoOutput);
+            campoPost.value = input.value; // Asigna el valor del campo CedulaColaborador al campo CedulaColaboradorOutput
+            cambiosRealizados = true;
+        } else {
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.add('formulario__input-error-activo');
+            campos[campo] = false;
+        }
+    };
+
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', validarFormulario);
+        input.addEventListener('blur', validarFormulario);
+    });
+
+    document.querySelector('.validate-before-submit').addEventListener('click', (e) => {
+    e.preventDefault();    
+    for (const campo in campos) {
+        if (campos[campo]) {
+        document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+    } else {
+        document.getElementById('formulario__mensaje').classList.remove('formulario__mensaje-activo');
+    }
+    }
+});
+const selectSucursal = document.getElementById('sucursales-select');
+
+selectSucursal.addEventListener('change', () => {
+    cambiosRealizados = true;
+    habilitarBotonEditar();
+});
+
+
+    document.querySelector('.validate-before-submit').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (campos.CedulaAdministrador || campos.NombresAdministrador || campos.ApellidosAdministrador || campos.NumeroTelefonoAdministrador || campos.CorreoAdministrador || cambiosRealizados) {
+            var modalEditarForm = new bootstrap.Modal(document.getElementById('modalEditarForm'));
+            modalEditarForm.show();
+        } else {
+            document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+        }
+    });
+
+
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (campos.CedulaAdministrador && campos.NombresAdministrador && campos.ApellidosAdministrador && campos.NumeroTelefonoAdministrador && campos.CorreoAdministrador) {
+            formulario.submit();
+        } else {
+            document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+        }
+    });
+
+    // Función para habilitar y deshabilitar el botón de editar según los cambios en los campos
+    const botonEditarInformacion = document.getElementById('botonEditarInformacion');
+
+    const activarBotonEditar = () => {
+        botonEditarInformacion.disabled = false;
+    };
+
+    const desactivarBotonEditar = () => {
+        botonEditarInformacion.disabled = true;
+    };
+
+    const habilitarBotonEditar = () => {
+        if (cambiosRealizados) {
+            activarBotonEditar();
+        } else {
+            desactivarBotonEditar();
+        }
+    };
+
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', () => {
+            validarFormulario(event);
+            habilitarBotonEditar();
+        });
+    });
+
+    formulario.addEventListener('change', () => {
+        cambiosRealizados = true;
+        habilitarBotonEditar();
+    });
+
+    habilitarBotonEditar();
+</script>
+
+{% endblock %}

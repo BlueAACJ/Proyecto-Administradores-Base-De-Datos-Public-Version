@@ -1,0 +1,162 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+    {% extends "layoutAdmin.html" %}
+{% else %}
+    {% extends "layoutGerente.html" %}
+{% endif %}
+
+{% block title %}Perfil{% endblock %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+{% block main%} 
+<section>
+    
+    <div class="container py-5">
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img src="/static/images/undraw_profile.svg" alt="avatar"
+                class="rounded-circle img-fluid" style="width: 150px;">
+              <h5 class="my-3">{{result_admin[0]['NombresAdministrador']}}</h5>
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Nombre Completo</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{result_admin[0]['NombresAdministrador']}} {{result_admin[0]['ApellidosAdministrador']}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Correo electrónico</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{result_admin[0]['CorreoAdministrador']}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Celular</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">(+505) {{result_admin[0]['NumeroTelefonoAdministrador']}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Sucursal</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{sucursal_admin[0]}} {{sucursal_admin[1]}}</p>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      <form method="post">
+        {% if pass_pop == 1 %}
+        <div class="alert alert-danger" role="alert" id="passwordAlert">
+          La contraseña que ingresaste es incorrecta, ingrese su contraseña en el campo contraseña actual!
+        </div>
+        {% elif pass_pop == 2 %}
+        <div class="alert alert-danger" role="alert" id="passwordAlert">
+          La contraseña debe tener almenos 8 caracteres
+        </div>
+        {% elif pass_pop == 0 %}
+        <div class="alert alert-danger" role="alert" id="passwordAlert">
+          Error en la confirmacion de la nueva contraseña, la contraseña debe ser igual en el campo "Ingrese su nueva contraseña"
+          y en el campo "Confirmar Contraseña"
+        </div>
+        {% elif pass_pop == -1 %}
+        <div class="alert alert-danger" role="alert" id="passwordAlert">
+          La nueva contraseña no debe ser igual a la contraseña actual.
+        </div>
+        {% endif %}
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Ingrese su contraseña actual</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <div class="input-group">
+                      <input class="form-control" type="password" id="actualContraseniaAdministrador" name="actualContraseniaAdministrador">
+                      <div class="input-group-append">
+                        <button class="btn btn-ojo" type="button" onclick="mostrarOcultar('actualContraseniaAdministrador')">
+                          <i class="fas fa-eye"></i> <!-- Ícono de ojo abierto -->
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Ingrese su nueva contraseña</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <div class="input-group">
+                      <input class="form-control" type="password" id="nuevaContraseniaAdministrador" name="nuevaContraseniaAdministrador">
+                      <div class="input-group-append">
+                        <button class="btn btn-ojo" type="button" onclick="mostrarOcultar('nuevaContraseniaAdministrador')">
+                          <i class="fas fa-eye"></i> <!-- Ícono de ojo abierto -->
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Confirme su contraseña</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <div class="input-group">
+                      <input class="form-control" type="password" id="confirmarContraseniaAdministrador" name="confirmarContraseniaAdministrador">
+                      <div class="input-group-append">
+                        <button class="btn btn-ojo" type="button" onclick="mostrarOcultar('confirmarContraseniaAdministrador')">
+                          <i class="fas fa-eye"></i> <!-- Ícono de ojo abierto -->
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+        </div>
+
+      </form>
+      </div>
+    </div>
+  </section>
+  <script>
+    function mostrarOcultar(idInput) {
+        var input = document.getElementById(idInput);
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+</script>
+{%endblock%}

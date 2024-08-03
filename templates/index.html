@@ -1,0 +1,79 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+
+    {% extends "layoutAdmin.html" %}
+    
+{% else %}
+
+{% extends "layoutColaborador.html" %}
+
+{% endif %}
+
+{% block title %}Pagina Principal{% endblock %}
+
+{% block main%} 
+<main >
+    {% if session['primera_contrasena'] %}
+    <!-- Modal -->
+    <div class="modal fade show" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Aviso importante!</h5>
+                </div>
+                <div class="modal-body">
+                    Por motivos de <strong>seguridad</strong> se le recomienda cambiar su contraseña por defecto!
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ url_for('ocultar_modal') }}" class="btn btn-secondary">Cerrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    {% endif %}
+    <!-- Header-->
+    <header class="bg-dark py-4">
+        <div class="container px-5">
+            <div class="row gx-5 align-items-center justify-content-center">
+                <div class="col-lg-8 col-xl-7 col-xxl-6">
+                    <div class="my-5 text-center text-xl-start">
+                        <h1 class="display-5 fw-bolder text-white mb-2">GRUPO TALSE</h1>
+                        <p class="lead fw-normal text-white-50 mb-4">Promoviendo el bienestar financiero de nuestros colaboradores y contribuyendo a un ambiente laboral positivo.</p>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="/static/images/GrupoTalse.jpg" alt="..." /></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-3">
+        <div class="row justify-content-center">
+            <div class="col-2">
+                <a href="https://www.facebook.com/elzocalonicaragua?locale=es_LA" target="_blank">
+                    <img src="/static/images/elzocalo.jpg" alt="Imagen 1" class="img-fluid m-1 rounded-circle">
+                </a>
+            </div>
+            <div class="col-2">
+                <a href="https://www.facebook.com/LaNaniCafe/" target="_blank">
+                    <img src="/static/images/lanani.jpg" alt="Imagen 2" class="img-fluid m-1 rounded-circle">
+                </a>
+            </div>
+            <div class="col-2">
+                <a href="https://www.facebook.com/lasurenamarisqueria/" target="_blank">
+                    <img src="/static/images/lasureña.jpg" alt="Imagen 3" class="img-fluid m-1 rounded-circle">
+                </a>
+            </div>
+            <div class="col-2">
+                <a href="https://www.facebook.com/restaurantesmiranchito/?locale=ms_MY" target="_blank">
+                    <img src="/static/images/miranchito.jpg" alt="Imagen 4" class="img-fluid m-1 rounded-circle">
+                </a>
+            </div>
+            <div class="col-2">
+                <a href="https://www.facebook.com/setentagradosnic/" target="_blank">
+                    <img src="/static/images/setentagrados.jpg" alt="Imagen 5" class="img-fluid m-1 rounded-circle">
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

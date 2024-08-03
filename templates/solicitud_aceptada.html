@@ -1,0 +1,89 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+    {% extends "layoutAdmin.html" %}
+{% else %}
+    {% extends "layoutGerente.html" %}
+{% endif %}
+
+{% block title %}
+Solicitudes Aceptadas
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <div class="row">
+            <div class="col">
+                <h1 class="mt-4">Solicitudes Aceptadas</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Solicitudes de prestamos Aprobadas por GrupoTalse</li>
+                </ol>
+                {% if session['cedula_administrador'] == "000-000000-0000A" %}
+                    <!-- Example single danger button -->
+                <div class="btn-group mb-4 me-0">
+                    {% if sucursal %}
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{sucursal}}
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Todas las Sucursales
+                    </button>
+                    {% endif %}
+                    <ul class="dropdown-menu">
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/1" style="text-decoration: none;"><button class="dropdown-item">Mi Ranchito Rivas</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/2" style="text-decoration: none;"><button class="dropdown-item">Mi Ranchito Catarina</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/3" style="text-decoration: none;"><button class="dropdown-item">Mi Ranchito Masaya</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/4" style="text-decoration: none;"><button class="dropdown-item">Mi Ranchito Galerias</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/5" style="text-decoration: none;"><button class="dropdown-item">El Zocalo Masaya</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/6" style="text-decoration: none;"><button class="dropdown-item">El Zocalo Villa Fontana</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/7" style="text-decoration: none;"><button class="dropdown-item">El Zocalo Galerias</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/8" style="text-decoration: none;"><button class="dropdown-item">La Nani Cafe Rivas</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/9" style="text-decoration: none;"><button class="dropdown-item">La Nani Cafe Masaya</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/10" style="text-decoration: none;"><button class="dropdown-item">Setenta Grados Rivas</button></a></li>
+                    <li><a href="/solicitudes_aceptadas_por_sucursal/11" style="text-decoration: none;"><button class="dropdown-item">La Sureña Rivas</button></a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a href="/solicitudes_aceptadas_gerente" style="text-decoration: none;"><button class="dropdown-item">Todas las sucursales</button></a></li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card mb-4">
+            
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Solicitudes Aprobadas
+            </div>
+            
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha de aprobación</th>
+                            <th>Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Monto Aprobado</th>
+                            <th>Plazo en meses</th>
+                            <th>Cuotas quincenales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td>{{ row.FechaDeAprobacion.strftime('%d-%m-%Y') if row.FechaDeAprobacion else '' }}</td>
+                                <td>{{ row.CedulaColaborador }}</td>
+                                <td>{{ row.NombresColaborador }}</td>
+                                <td>{{ row.ApellidosColaborador }}</td>
+                                <td>{{ row.Capital }}</td>
+                                <td>{{ row.PlazoDePago_Meses }}</td>
+                                <td>{{ row.Cuotas }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

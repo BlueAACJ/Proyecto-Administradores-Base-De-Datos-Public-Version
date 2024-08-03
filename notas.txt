@@ -1,0 +1,89 @@
+- Explicacion de los archivos necesarios para la ejecucion del prototipo: 
+    - Credential.Json:
+        Este JSON contiene la información de configuración para una aplicación instalada que 
+        utiliza OAuth 2.0 para autenticarse con los servicios de Google. A continuación, se explica 
+        cada campo:
+        
+        {
+            "installed":
+            {
+                "client_id":"",
+                Identificador único asignado a tu aplicación por Google.
+
+                "project_id":"",
+                Identificador del proyecto de Google Cloud asociado a tu aplicación.
+
+                "auth_uri":"",
+                URI de autorización donde los usuarios serán redirigidos para otorgar acceso a tu aplicación.
+
+                "token_uri":"",
+                URI del token donde tu aplicación puede intercambiar un código de autorización por un token de acceso y/o un token de actualización.
+
+                "auth_provider_x509_cert_url":"",
+                URL donde se pueden obtener los certificados públicos utilizados por Google para firmar tokens.
+
+                "client_secret":"",
+                Secreto del cliente asignado a tu aplicación por Google.
+
+                "redirect_uris":["http://localhost"]
+                Lista de URIs de redirección autorizadas para tu aplicación.Después de que el usuario otorgue acceso, Google redirigirá la respuesta 
+                a una de estas URIs. En este caso, la URI http://localhost se usa durante el desarrollo local.
+            }
+        }
+
+    - .env
+        Variables de entorno necesarias para la ejecucion del prototipo:
+    
+        FLASK_APP=application.py
+        Indica a Flask qué archivo debe ejecutar para iniciar la aplicación.
+
+        FLASK_DEBUG=1
+        Activa o desactiva el modo de depuración en Flask. 1 activo 0 desactivo 
+
+        MYSQL_HOST=127.0.0.1
+        Dirección del servidor MySQL. En este caso en la maquina local 
+
+        MYSQL_USER='Nombre del usuario'
+        Nombre de usuario para conectarse a MySQL.
+
+        MYSQL_PASSWORD='Contrasena para conectarse a MySQL'
+        La contraseña asociada al usuario de MySQL para la autenticación.
+
+        MYSQL_DB='NombreDeLaBD'
+        Especifica la base de datos específica en MySQL que utilizará la aplicación Flask.
+
+        SecretKey='SecretKey1234'
+        Clave secreta utilizada por Flask para la gestión de sesiones y la protección contra ataques CSRF. Ejemplo:'MessiTheGoat'
+
+        MAIL_SERVER='CorreoEjemplo@gmail.com'
+        Indica a Flask-Mail el servidor SMTP que debe usar para enviar correos electrónicos.
+
+        MAIL_PORT=587
+        Especifica el puerto a través del cual se debe conectar al servidor SMTP (587 es comúnmente usado para conexiones SMTP seguras con TLS).
+
+        MAIL_USE_TLS=True
+        Asegura que la conexión al servidor de correo sea cifrada utilizando TLS.
+        
+        MAIL_USERNAME='CorreoEjemplo2@gmail.com'
+        La dirección de correo electrónico que se utilizará como remitente y para autenticarse en el servidor SMTP.
+        
+        MAIL_PASSWORD='ContrasenaDeEjemplo'
+        La contraseña asociada al nombre de usuario de correo electrónico para la autenticación en el servidor SMTP.
+
+    - token_gmail_v1.pickle
+        Para usar la API de Gmail para enviar correos y manejar el archivo token_gmail_v1.pickle, se suele seguir el flujo de autenticación de OAuth2 de Google.
+
+    - config.py
+        Este código carga configuraciones específicas (como la configuración de Flask, la conexión a MySQL y la 
+        configuración de Passlib para el hashing seguro de contraseñas) desde variables de entorno definidas en un archivo .env, 
+        lo que facilita la configuración y la gestión de secretos sensibles fuera del código fuente.
+
+-Documentacion de API de Google para el envio de correos 
+    https://developers.google.com/gmail/api/guides/sending
+
+- Instalacion de los paquetes necesarios para la ejecucion del prototipo:
+    python.exe -m pip install --upgrade pip
+    pip install -r requirements.txt
+
+- Ejecutar el prototipo:
+    flask run

@@ -1,0 +1,128 @@
+{% extends "layoutGerente.html" %}
+
+{% block title %}
+Agregar Admin
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Agregar Administrador</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active"><strong>Inserción de los datos del Administrador de una sucursal</strong></li>
+        </ol>
+        <form method="post" id="formAgregarAdmin">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+            <h4>Información del Administrador:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_CedulaAdministrador">
+                        <label for="CedulaAdministrador" class="form-label" >Número de cédula:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CedulaAdministrador" id="CedulaAdministrador" autocomplete="nope" placeholder="xxx-xxxxxx-xxxxx" required>
+                            <input type="hidden" name="CedulaAdministradorOutput" id="CedulaAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Los guiones se escriben automaticamente en el formatO "000-000000-0000X"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_NombresAdministrador">
+                        <label for="NombresAdministrador" class="form-label">Nombres:</label>
+                        <div>
+                            <input type="text" class="form-control" name="NombresAdministrador" id="NombresAdministrador" placeholder="Nombres" autocomplete="nope"
+                                oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="NombresAdministradorOutput" id="NombresAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un nombre valido "Solo letras"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_ApellidosAdministrador">
+                        <label for="ApellidosAdministrador" class="form-label">Apellidos:</label>
+                        <div>
+                            <input type="text" class="form-control" name="ApellidosAdministrador" id="ApellidosAdministrador" placeholder="Apellidos" autocomplete="nope"
+                                oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="ApellidosAdministradorOutput" id="ApellidosAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un apellido valido "Solo letras"</p>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_NumeroTelefonoAdministrador">
+                        <label for="NumeroTelefonoAdministrador" class="form-label">Teléfono (+505):</label>
+                        <div>
+                            <input type="number" class="form-control" name="NumeroTelefonoAdministrador" id="NumeroTelefonoAdministrador" autocomplete="nope" placeholder="88888888" required>
+                            <input type="hidden" name="NumeroTelefonoAdministradorOutput" id="NumeroTelefonoAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese 8 numeros</p>
+                    </div>
+
+                    <div class="mb-3" id="grupo_CorreoAdministrador">
+                        <label for="CorreoAdministrador" class="form-label">Correo electrónico:</label>
+                        <div>
+                            <input type="email" class="form-control" name="CorreoAdministrador" id="CorreoAdministrador" autocomplete="nope" placeholder="usuario@gmail.com" required>
+                            <input type="hidden" name="CorreoAdministradorOutput" id="CorreoAdministradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un correo valido</p>
+                    </div>
+
+                    <div class="mb-3">
+                    <label for="sucursal" class="form-label">Sucursal:</label>
+                        <select class="form-select" type="text" name="IdSucursal">
+                            <option value="1">Mi Ranchito Rivas</option>
+                            <option value="2">Mi Ranchito Catarina</option>
+                            <option value="3">Mi Ranchito Masaya</option>
+                            <option value="4">Mi Ranchito Galerias</option>
+                            <option value="5">El Zocalo Masaya</option>
+                            <option value="6">El Zocalo Villa Fontana</option>
+                            <option value="7">El Zocalo Galerias</option>
+                            <option value="8">La Nani Cafe Rivas</option>
+                            <option value="9">La Nani Cafe Masaya</option>
+                            <option value="10">Setenta Grados Rivas</option>
+                            <option value="11">La Sureña Rivas</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <br>
+            
+            <div>
+                <button type="button" style="margin-right: 10px;" class="btn btn-success"
+                data-bs-toggle="modal" data-bs-target="#modalAgregarForm">
+                    Agregar Administrador
+                </button>
+
+                <a href="/dashboard">
+                    <button type="button" class="btn btn-secondary">Cancelar</button>
+                </a>
+            </div>
+        </form>
+        <br>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modalAgregarForm" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalAgregarLabel">Añadir información del Administrador</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <!-- Contenido del modal -->
+                ¿Estas seguro que deseas añadir al Administrador?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('formAgregarAdmin').submit()">Agregar Administrador</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+
+<script src="static/js/validacionAgregarAdmin.js"></script>
+<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+{% endblock %}

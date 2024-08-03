@@ -1,0 +1,63 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+    {% extends "layoutAdmin.html" %}
+{% else %}
+    {% extends "layoutGerente.html" %}
+{% endif %}
+
+{% block title %}
+Registrar Cuotas
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Registro de Cuotas</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Registro de Cuotas correspondientes a la quincena</li>
+        </ol>
+        {% if diccionario == [] %}
+            <button class="btn btn-success mb-4" disabled="disabled">Generar Reporte</button>
+        {% else %}
+            <a href="/download_pdf_registro_de_cuotas"><button class="btn btn-success mb-4">Generar Reporte</button></a>
+        {% endif %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Cuotas de la quincena
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>N0 Cuota</th>
+                            <th>Cedula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Monto Cuota</th>
+                            <th>Estado Cuota</th>
+                            <th>Registrar</th>
+                            <th>Ver Prestamo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in diccionario %}   
+                        <tr>
+                            <td>{{ i.FechaDePago.strftime('%d-%m-%Y') if i.FechaDePago else '' }}</td>
+                            <td>{{i.NumeroDeCuota}}</td>
+                            <td>{{i.CedulaColaborador}}</td>
+                            <td>{{i.NombresColaborador}}</td>
+                            <td>{{i.ApellidosColaborador}}</td>
+                            <td>C$ {{ monto_cuota[loop.index0] }}</td>
+                            <td>{{i.EstadoCuota}}endiente</td>
+                            <td><a href="/actualizar_cuota/{{i.IdRegistroPago}}"><button class="btn btn-success">Registrar Cuota</button></a></td>
+                            <td><a href="/prestamo_detallado/{{i.CedulaColaborador}}/{{i.IdSolicitudesPrestamos}}"><button class="btn btn-primary">Ver Prestamo</button></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

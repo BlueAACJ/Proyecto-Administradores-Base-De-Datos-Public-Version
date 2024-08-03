@@ -1,0 +1,232 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+    {% extends "layoutAdmin.html" %}
+{% else %}
+    {% extends "layoutGerente.html" %}
+{% endif %}
+
+{% block title %}
+Detalles de solicitud
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Informacion de la solicitud</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Informacion de la solicitud en espera de ser aprobada o denegada</li>
+        </ol>
+        <form method="post" id="formDetalleSolicitud">
+            <h4>Información del Colaborador:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="numeroCedula" class="form-label" >Número de cédula</label>
+                        <input type="text" class="form-control" name="CedulaColaborador" 
+                            value="{{ rows[0]['CedulaColaborador'] }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombres" class="form-label">Nombres:</label>
+                        <input type="text" class="form-control" name="NombresColaborador" 
+                            value="{{ rows[0]['NombresColaborador'] }}" readonly>     
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" name="ApellidosColaborador"
+                            value="{{ rows[0]['ApellidosColaborador'] }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="salario" class="form-label">Salario</label>
+                        <input type="text" class="form-control" name="SalarioColaborador"
+                            value="{{ rows[0]['SalarioColaborador'] }}" readonly>
+                    </div>
+                    <!--Te van a retornar el numero (value = numero) que equivale el IdSucursal en la base de datos-->
+                    <div class="mb-3">
+                        <label for="sucursal" class="form-label">Sucursal:</label>
+                        <input type="text" class="form-control" name="IdSucursal"
+                            value="{{nombre_sucursal}} {{direccion_sucursal}}" readonly>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    <!--Tipo de contrato va a retornar value=F para Fijo y value = T para temporales-->
+                    <div class="mb-3">
+                        <label for="tipoContrato" class="form-label">Tipo de contrato:</label>
+                        {% if rows[0]['TipoDeContrato'] == "D" %}  
+                        <input type="text" class="form-control" name="TipoDeContrato"
+                            value="Determinado" readonly>
+                        {%else%}
+                        <input type="text" class="form-control" name="TipoDeContrato"
+                            value="Indeterminado" readonly>
+                        {%endif%}
+                    </div>
+                    <!--Estado crediticio del colaborador va a retornar value = 1 para Debe y value = 0 para no debe-->
+                    <div class="mb-3">
+                        <label for="estadoCrediticio" class="form-label">Estado Crediticio:</label>
+                        {% if rows[0]['EstadoCrediticio'] == "0" %}  
+                        <input type="text" class="form-control" name="EstadoCrediticio"
+                            value="No debe" readonly>
+                        {%else%}
+                        <input type="text" class="form-control" name="EstadoCrediticio"
+                            value="Debe" readonly>
+                        {%endif%}
+                    </div>
+        
+                    <div class="mb-3">
+                        <label for="fechaContratacion" class="form-label">Fecha de Contratación:</label>
+                        {% set formattedDate = rows[0]['FechaContratacion'].strftime('%d-%m-%Y') if rows[0]['FechaContratacion'] else '' %}
+                        <input type="text" class="form-control" name="FechaContratacion" value="{{ formattedDate }}" readonly>
+                    </div>
+                    
+        
+                    <div class="mb-3">
+                        <label for="liquidacion" class="form-label">Liquidacion hasta fecha actual en C$:</label>
+                        <input type="text" class="form-control" name="LiquidacionColaborador"
+                            value="{{monto}}" readonly>
+                    </div>
+                </div>
+            </div>
+            <h4>Información de la Solicitud:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="fechaSolicitud" class="form-label">Fecha de Solicitud:</label>
+                        {% set formattedDate = rowsSolicitud[0]['FechaDeSolicitud'].strftime('%d-%m-%Y') if rowsSolicitud[0]['FechaDeSolicitud'] else '' %}
+                        <input type="text" class="form-control" name="FechaDeSolicitud" value="{{ formattedDate }}" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="montoSolicitado" class="form-label">Monto solicitado:</label>
+                        <input type="text" class="form-control" name="MontoSolicitado"
+                            value="{{rowsSolicitud[0]['MontoSolicitado']}}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="plazoPago" class="form-label">Plazo de pago Solicitado:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" 
+                                value="{{rowsSolicitud[0]['PlazoDePago']}}" readonly>
+                            <span class="input-group-text">meses</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="motivoPrestamo" class="form-label">Motivo de préstamo (máximo 50 palabras):
+                        </label>
+                        <textarea class="form-control" name="MotivoPrestamo" rows="4" maxlength="250" readonly>{{ rowsSolicitud[0]['MotivoPrestamo'] }}</textarea>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_MontoAprobado">
+                        <label for="MontoAprobado" class="form-label">Monto aprobado:</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoAprobado" id="MontoAprobado" placeholder="000000" autocomplete="none" required>
+                            <input type="hidden" name="MontoAprobadoOutput" id="MontoAprobadoOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese el monto aprobado en Numeros</p>
+                    </div>
+                    <div class="mb-3" id="grupo_PlazoDePagoAprobado">
+                        <label for="PlazoDePagoAprobado" class="form-label">Plazo de pago aprobado:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="PlazoDePagoAprobado" id="PlazoDePagoAprobado" placeholder="0" autocomplete="none" required>
+                            <span class="input-group-text">meses</span>
+                            <input type="hidden" id="PlazoDePagoAprobadoOutput" name="PlazoDePagoAprobadoOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese el plazo de pago en Numeros</p>
+                    </div>
+                    {% if session['cedula_administrador'] == "000-000000-0000A" %}
+                    <div class="mb-3" id="grupo_InteresAprobado">
+                        <label for="InteresAprobado" class="form-label">Tasa de interes quincenal aprobado:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="InteresAprobado" id="InteresAprobado" placeholder="0" autocomplete="none" required>
+                            <span class="input-group-text">%</span>
+                            <input type="hidden" id="InteresAprobadoOutput" name="InteresAprobadoOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese el interes aprobado</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="formulario__mensaje" id="formulario__mensaje" style="margin-bottom: 20px;">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena todos los campos correctamente. </p>
+			</div>
+            <div style="margin-bottom: 10px; margin-top: 10px; display: flex; justify-content: left; align-items: center;">
+                
+                <div>
+                    <a href="/index">
+                        <button type="button" class="btn btn-secondary">Cancelar</button>
+                    </a>
+                </div>
+
+                <div style="margin-left: 10px;">
+                    <a href="/denegar_solicitud/{{rows[0]['IdColaborador']}}"><button type="button" class="btn btn-danger">Denegar Solicitud</button></a>
+                </div>
+
+                <div style="margin-left: 10px;">
+                    <button type="submit" class="btn btn-success" 
+                    name="btnGenerarPrestamo">Generar Prestamo</button>
+                </div>
+                <div>
+                    <input type="hidden" value="{{rows[0]['IdColaborador']}}" name="idColaborador">
+                    <input type="hidden" value="{{rowsSolicitud[0]['IdSolicitudesPrestamos']}}" name="idSolicitudesPresamos">
+                </div>
+            </div>
+        </form>
+        <br>
+    </div>
+</main>
+
+<script>
+    // Tu script JavaScript
+    const formulario = document.getElementById('formDetalleSolicitud');
+    const inputs = document.querySelectorAll('#formDetalleSolicitud input');
+    const expresiones = {
+        monto: /^[0-9]+([.,][0-9]+)?$/, // solo números y puede tener decimales
+        plazo: /^[0-9]+$/, // solo números enteros
+    };
+    const campos = {
+        MontoAprobado: false,
+        PlazoDePagoAprobado: false,
+    };
+    const validarFormulario = (e) => {
+        switch (e.target.name) {
+            case "MontoAprobado":
+                validarCampo(expresiones.monto, e.target, 'MontoAprobado', 'MontoAprobadoOutput');
+                break;
+            case "PlazoDePagoAprobado":
+                validarCampo(expresiones.plazo, e.target, 'PlazoDePagoAprobado', 'PlazoDePagoAprobadoOutput');
+                break;
+        }
+    };
+    const validarCampo = (expresion, input, campo, campoOutput) => {
+        if (expresion.test(input.value)) {
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.remove('formulario__input-error-activo');
+            campos[campo] = true;
+            var campoPost = document.getElementById(campoOutput);
+            campoPost.value = input.value;
+            console.log(campoPost);
+        } else {
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.add('formulario__input-error-activo');
+            campos[campo] = false;
+        }
+    };
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', validarFormulario);
+        input.addEventListener('blur', validarFormulario);
+    });
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        if (campos.MontoAprobado && campos.PlazoDePagoAprobado) {
+            document.getElementById('formulario__mensaje').classList.remove('formulario__mensaje-activo');
+            formulario.submit();
+        }else{
+            document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+        }
+    });
+</script>
+{% endblock %}

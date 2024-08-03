@@ -1,0 +1,122 @@
+{% extends "layoutColaborador.html" %}
+
+{% block title %}Generar Solicitud{% endblock %}
+
+{% block main%} 
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Generar una solicitud de préstamo</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Inserción de los datos para solicitar un prestamo</li>
+        </ol>
+        <form method="post" id="SolicitudPrestamo">
+            
+            <h4>Información de la solicitud:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    {% if result == 1 %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted ya envío una solicitud, espere los resultados.
+                    </div>
+                    {% elif result == 2%}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted tiene un préstamo activo.
+                    </div>
+                    {% elif EstadoColaborador == "D" %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted no labora en la empresa, no puede hacer una solicitud.
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="fechaContratacion" class="form-label">Fecha de solicitud:</label>
+                        <input type="text" class="form-control" value="{{fecha_mostrada}}"  readonly>
+                    </div>
+                    <div class="mb-3" id="grupo_MontoSolicitado">
+                        <label for="MontoSolicitado" class="form-label" >Monto solicitado C$</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoSolicitado" id="MontoSolicitado" placeholder="00000" 
+                                autocomplete="nope" required>
+                            <input type="hidden" name="MontoSolicitadoOutput" id="MontoSolicitadoOutput" >
+                        </div>
+                        <p class="formulario__input-error">Ingrese un monto menor que el monto maximo a solicitar</p>
+                    </div>
+                    <div class="mb-3" id="grupo_PlazoDePago">
+                        <label for="PlazoDePago" class="form-label">Plazo de pago</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="PlazoDePago" id="PlazoDePago" placeholder="0"
+                                autocomplete="nope" required>
+                            <input type="hidden" name="PlazoDePagoOutput" id="PlazoDePagoOutput">
+                            <span class="input-group-text">meses</span>
+                        </div>
+                        <p class="formulario__input-error">Ingrese Plazo de pago en numeros</p>
+                    </div>
+                    <div class="mb-3" id="grupo_MotivoDePrestamo">
+                        <label for="MotivoDePrestamo" class="form-label">Motivo de préstamo:</label>
+                        <div>
+                            <textarea class="form-control" name="MotivoDePrestamo" id="MotivoDePrestamo" placeholder="Ingrese al menos 4 palabras" style="height: 100px;" required autocomplete="nope"></textarea>
+                            <input type="hidden" name="MotivoDePrestamoOutput" id="MotivoDePrestamoOutput">
+                        </div>
+                        <p class="formulario__input-error">Debes ingresar al menos 1 palabras maximo 30</p>
+                    </div>
+                </div>
+
+                <!-- Mostrar aviso -->
+                <div class="col-md-6">
+                    {% if result == 1 %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted ya envío una solicitud, espere los resultados.
+                    </div>
+                    {% elif result == 2%}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted tiene un préstamo activo.
+                    </div>
+                    {% elif EstadoColaborador == "D" %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted no labora en la empresa, no puede hacer una solicitud.
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Contratación:</label>
+                        {% set formattedDate = FechaContratacion.strftime('%d-%m-%Y') if FechaContratacion else '' %}
+                        <input type="text" class="form-control" value="{{ formattedDate }}" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Monto máximo que puede solicitar C$:</label>
+                        <input type="text" class="form-control" name="liquidacion"
+                            value="{{liquidacion}}" readonly>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="formulario__mensaje" id="formulario__mensaje" style="margin-bottom: 20px;">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+			</div>
+            <div>
+                {% if result == 1 or result == 2 or EstadoColaborador == "D" %}
+                <button type="button" style="margin-right: 10px;" class="btn btn-primary" disabled="disabled">Generar Solicitud</button>
+                {% else %}
+                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Generar Solicitud</button>
+                <p class="formulario_mensaje-exitoso" id="formulario_mensaje-exitoso">SE ENVIARON CORRECTAMENTE LOS DATOS!</p>
+                {% endif %}
+
+                <a href="/index">
+                    <button type="button" class="btn btn-danger">Cancelar</button>
+                </a>
+            </div>
+        </form>
+        <br>
+    </div>
+</main>
+<script src="static/js/validacionSolicitudColaborador.js"></script>
+<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+{% endblock %} 

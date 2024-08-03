@@ -1,0 +1,81 @@
+{% extends "layoutGerente.html" %}
+
+{% block title %}
+Despedir Administrador
+{% endblock %}
+
+{% block main %}
+<style>
+    .icono {
+        font-size: 1.5rem; 
+    }
+</style>
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Despedir Administrador</h1>
+        <div class="alert alert-danger" role="alert">
+            <strong>En esta sección debe tener cuidado, ya que puede despedir a un administrador, este no podrá hacer acceder al sistema, deberá contratar a otro administrador para administrar los préstamo de la sucursal.</strong>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Administradores
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Sucursal</th>
+                            <th>Despedir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in rows %}
+                        {% if i.EstadoAdministrador == "1" and i.CedulaAdministrador != "000-000000-0000A" %}
+                        <tr>
+                            <td>{{ i.CedulaAdministrador }} </td>
+                            <td>{{ i.NombresAdministrador }}  </td>
+                            <td>{{ i.ApellidosAdministrador }}  </td>
+                            <td>{{ sucursales[i.IdSucursal - 1 ]['nombreDeSucursal'] }} {{ sucursales[i.IdSucursal - 1]['direccionSucursal'] }}</td>
+                            <td class="align-middle text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-danger fa-solid fa-user-minus icono" type="button"  
+                                        data-bs-toggle="modal" data-bs-target="#modalEliminarForm{{ i.IdAdministrador }}">
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        
+                        <div class="modal fade" id="modalEliminarForm{{ i.IdAdministrador }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ i.IdAdministrador }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalEliminarLabel">Despedir al administrador</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                <!-- Contenido del modal -->
+                                    Estas seguro que deseas despedir a: <strong>{{i.NombresAdministrador}} {{i.ApellidosAdministrador}}</strong>
+                                    con número de cédula: <strong>{{i.CedulaAdministrador}}</strong>?
+                                    <br>(Deberás contratar a otro administrador para la sucursal).
+                                </div>
+                                <div class="modal-footer">
+                                    <a  href="/despedir_admin_parametro/{{i.IdAdministrador}}"><button class="btn btn-danger">Despedir Administrador</button></a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

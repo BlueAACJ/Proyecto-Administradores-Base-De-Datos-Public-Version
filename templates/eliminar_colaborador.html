@@ -1,0 +1,113 @@
+{% extends "layoutAdmin.html" %}
+
+{% block title %}
+Despedir Colaborador
+{% endblock %}
+
+{% block main %}
+<style>
+    .icono {
+        font-size: 1.5rem; 
+    }
+</style>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Despedir Colaborador</h1>
+        <div class="alert alert-danger" role="alert">
+            <strong>En esta sección debe tener cuidado, ya que puede despedir a un colaborador, este no podrá hacer solicitudes, solo si es contratado otra vez</strong>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Colaboradores
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha de contratación</th>
+                            <th>N0 Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Correo eléctrónico</th>
+                            <th>Número telefónico</th>
+                            <th>Estado Crediticio</th>
+                            <th>Eliminar Colaborador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in rows %}
+                        {% if i.EstadoColaborador == "A"%}
+                        <tr>
+                            <td>{{ i.FechaContratacion.strftime('%d-%m-%Y') if i.FechaContratacion else ''  }} </td>
+                            <td>{{ i.CedulaColaborador }} </td>
+                            <td>{{ i.NombresColaborador }}  </td>
+                            <td>{{ i.ApellidosColaborador }}  </td>
+                            <td>{{ i.CorreoColaborador }}</td>
+                            <td>{{ i.NumeroTelefonoColaborador }} </td>
+                            {% if i.EstadoCrediticio == "0" %}
+                            <td>No debe</td>
+                            {% else %}
+                            <td>Debe</td>                            
+                            {% endif %}
+                            <td class="align-middle text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-danger fa-solid fa-user-minus icono" type="button"  
+                                            data-bs-toggle="modal" data-bs-target="#modalEliminarForm{{ i.IdColaborador }}">
+                                    </button>
+                                </div>
+                            </td>                                                    
+                        </tr>
+                        {% endif %}
+                        <!-- Modal -->
+                        {% if i.EstadoCrediticio == "0" %}
+                        <div class="modal fade" id="modalEliminarForm{{ i.IdColaborador }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ i.IdColaborador }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalEliminarLabel">Despedir al colaborador</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                <!-- Contenido del modal -->
+                                    ¿Estas seguro que deseas despedir al colaborador: <strong>{{i.NombresColaborador}} {{i.ApellidosColaborador}}</strong>
+                                    con número de cédula: <strong>{{i.CedulaColaborador}}</strong>?
+                                    <br>(este colaborador no podrá hacer solicitudes de prestamos).
+                                </div>
+                                <div class="modal-footer">
+                                    <a  href="/eliminarcolaborador/{{i.IdColaborador}}"><button class="btn btn-danger">Despedir Colaborador</button></a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="modal fade" id="modalEliminarForm{{ i.IdColaborador }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ i.IdColaborador }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalEliminarLabel">Despedir al colaborador</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                <!-- Contenido del modal -->
+                                    No puedes despedir al colaborador: <strong>{{i.NombresColaborador}} {{i.ApellidosColaborador}}</strong>
+                                    con número de cédula: <strong>{{i.CedulaColaborador}}</strong>?
+                                    <br>(Ya que tiene un préstamo activo).
+                                </div>
+                                <div class="modal-footer">
+                                    <a  href="/opciones_inactividad_colaborador/{{i.CedulaColaborador}}"><button class="btn btn-warning">Otras opciones</button></a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

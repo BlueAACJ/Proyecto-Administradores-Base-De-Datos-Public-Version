@@ -1,0 +1,89 @@
+{% extends "layoutAdmin.html" %}
+
+{% block title %}Otras opciones{% endblock %}
+
+{% block main%} 
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Otras opciones de inactividad</h1>
+        <div class="alert alert-warning" role="alert">
+            <strong>En esta sección debe tener cuidado, lea detenidamente los cuadros de texto.</strong>
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2Disabled" style="height: 100px" disabled>Si necesita pagar todas la cuotas pendientes de un colaborador que va a pasar a un estado de inactividad en la empresa ya sea por renuncia, despido o fallecimiento lo puede hacer, las cuotas pendientes se le van a deducir de su liquidacion.
+            </textarea>
+        </div>
+        <form method="post" id="deducirPrestamo">
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_MontoSolicitado">
+                        <label for="MontoSolicitado" class="form-label">Nombre completo del colaborador:</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoSolicitado" id="MontoSolicitado"  
+                                value="{{datosColaborador[0]['NombresColaborador']}} {{datosColaborador[0]['ApellidosColaborador']}}" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="grupo_PlazoDePago">
+                        <label for="PlazoDePago" class="form-label">Número de cédula: </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="PlazoDePago" id="PlazoDePago"
+                                value="{{CedulaColaborador}}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mostrar aviso -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_MontoSolicitado">
+                        <label for="MontoSolicitado" class="form-label">Monto que se le va a deducir de la liquidación:</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoSolicitado" id="MontoSolicitado"  
+                                value="{{monto_deducido}}" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="grupo_MontoSolicitado">
+                        <label for="MontoSolicitado" class="form-label">Número de cuotas pendientes:</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoSolicitado" id="MontoSolicitado"  
+                                value="{{cuotas}}" readonly>
+                        </div>
+                    </div>
+                </div>
+        </form>
+        <br>
+        <div>     
+            <button type="button" style="margin-right: 10px; margin-bottom: 10px;" class="btn btn-danger"
+                data-bs-toggle="modal" data-bs-target="#modalDeducir">
+                Deducir Préstamo
+            </button>
+            <a href="/eliminar_colaborador">
+                <button type="button" style="margin-right: 10px; margin-bottom: 10px;" class="btn btn-secondary">Cancelar</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDeducir" tabindex="-1" aria-labelledby="modalDeducirLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalDeducirLabel">Decisión delicada</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal -->
+                    ¿Estás seguro que deseas deducir el préstamo de la liquidación?
+                    Al hacer esta operación, el colaborador estará <strong>inactivo</strong> en la empresa, las cuotas pendientes
+                    se pagarán a la fecha de hoy y el préstamo quedará <strong>cancelado</strong>.
+                </div>
+                <div class="modal-footer">
+                    <a href="/deducir_prestamo/{{CedulaColaborador}}/{{id_solicitud}}/{{id_prestamo}}" class="btn btn-danger">Deducir Préstamo</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}

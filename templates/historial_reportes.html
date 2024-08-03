@@ -1,0 +1,68 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+    {% extends "layoutAdmin.html" %}
+{% else %}
+    {% extends "layoutGerente.html" %}
+{% endif %}
+
+{% block title %}
+Historial Reportes
+{% endblock %}
+
+{% set meses_espanol = {
+    'January': 'Enero',
+    'February': 'Febrero',
+    'March': 'Marzo',
+    'April': 'Abril',
+    'May': 'Mayo',
+    'June': 'Junio',
+    'July': 'Julio',
+    'August': 'Agosto',
+    'September': 'Septiembre',
+    'October': 'Octubre',
+    'November': 'Noviembre',
+    'December': 'Diciembre'
+} %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Historial de Reportes</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Todos los reportes por fecha de generacion:</li>
+        </ol>
+        <p>Se mostraran los reportes de las fechas mas recientes</p>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Cuotas de la quincena
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Quincena</th>
+                            <th>Mes</th>
+                            <th>Año</th>
+                            <th>Cuotas Registradas</th>
+                            <th>Descargar Reporte</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {% for historial in historial %}  
+                        <tr>
+                            <td>{{ historial.FechaDePago.strftime('%d-%m-%Y') if historial.FechaDePago else '' }}</td>
+                            <td>{{ historial.Quincena }}</td>
+                            <th>{{ meses_espanol[historial.FechaDePago.strftime('%B')] }}</th>
+                            <td>{{ historial.FechaDePago.strftime('%Y') }}</td>
+                            <td>{{ historial.NumeroDeCuotasRegistradas }}</td>
+                            <td><a href="/download_pdf_reporte/{{ historial.FechaDePago }}"><button class="btn btn-primary">Descargar PDF</button></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "layoutAdmin.html" %}
+
+{% block title %}
+Editar Colaborador
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Editar Información Colaborador</h1>
+        <div class="alert alert-warning" role="alert">
+            <strong>En esta sección puede editar la información del colaborador.</strong>
+        </div>
+        <form method="post" id="formEditar">
+            <h4>Información del Colaborador:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_CedulaColaborador">
+                        <label for="CedulaColaborador" class="form-label" >Número de cédula:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CedulaColaborador" autocomplete="nope"
+                            value="{{ rows[0]['CedulaColaborador'] }}" required>
+                            <input type="hidden" name="CedulaColaboradorOutput" id="CedulaColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese el formato correcto "000-000000-0000X"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_NombresColaborador">
+                        <label for="NombresColaborador" class="form-label">Nombres:</label>
+                        <div>
+                            <input type="text" class="form-control" name="NombresColaborador" autocomplete="nope"
+                            value="{{ rows[0]['NombresColaborador'] }}" required>
+                            <input type="hidden" name="NombresColaboradorOutput" id="NombresColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un nombre valido "Solo letras"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_ApellidosColaborador">
+                        <label for="ApellidosColaborador" class="form-label">Apellidos:</label>
+                        <div>
+                            <input type="text" class="form-control" name="ApellidosColaborador" autocomplete="nope"
+                            value="{{ rows[0]['ApellidosColaborador'] }}" required>
+                            <input type="hidden" name="ApellidosColaboradorOutput" id="ApellidosColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un apellido valido "Solo letras"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_SalarioColaborador">
+                        <label for="SalarioColaborador" class="form-label">Salario Mensual C$:</label>
+                        <div>
+                            <input type="text" class="form-control" name="SalarioColaborador" id="SalarioColaborador" autocomplete="nope"
+                            value="{{ rows[0]['SalarioColaborador'] }}" required>
+                            <input type="hidden" name="SalarioColaboradorOutput" id="SalarioColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese solo numeros</p>   
+                    </div>
+                    <!--Te van a retornar el numero (value = numero) que equivale el IdSucursal en la base de datos-->
+                    <div class="mb-3">
+                        <label for="sucursal" class="form-label">Sucursal:</label>
+                        <select class="form-select" type="text" name="IdSucursal">
+                            <option value="{{ rows[0]['IdSucursal'] }}">{{nombre_sucursal}} {{direccion_sucursal}}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    <!--Tipo de contrato va a retornar value=F para Fijo y value = T para temporales-->
+                    <div class="mb-3">
+                        <label for="tipoContrato" class="form-label">Tipo de contrato:</label>
+                        <select class="form-select" name="TipoDeContrato" type="text">
+                            {% if rows[0]['TipoDeContrato'] == "D" %}
+                            <option value="D">Determinado</option>
+                            <option value="I">Indeterminado</option>
+                            {%else%}
+                            <option value="I">Indeterminado</option>
+                            <option value="D">Determinado</option>
+                            {%endif%}
+                        </select>
+                    </div>
+                    <!--Estado crediticio del colaborador va a retornar value = 1 para Debe y value = 0 para no debe-->
+                    <div class="mb-3">
+                        <label for="estadoCrediticio" class="form-label">Estado Crediticio:</label>
+                        <select class="form-select" name="EstadoCrediticio" type="text">
+                            <option>
+                                {% if rows[0]['EstadoCrediticio'] == "0" %}
+                                    No debe
+                                {% else %}
+                                    Debe
+                                {% endif %}
+                            </option>
+                        </select>
+                    </div>
+        
+                    <div class="mb-3" id="grupo_CorreoColaborador">
+                        <label for="CorreoColaborador" class="form-label">Correo electrónico:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CorreoColaborador" id="CorreoColaborador" autocomplete="nope"
+                            value="{{rows[0]['CorreoColaborador']}}" required>
+                            <input type="hidden" name="CorreoColaboradorOutput" id="CorreoColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un correo valido</p>
+                    </div>
+        
+                    <div class="mb-3" id="grupo_NumeroTelefonoColaborador">
+                        <label for="NumeroTelefonoColaborador" class="form-label">Teléfono (+505):</label>
+                        <div>
+                            <input type="text" class="form-control" name="NumeroTelefonoColaborador" autocomplete="nope"
+                            value="{{rows[0]['NumeroTelefonoColaborador']}}" required>
+                            <input type="hidden" name="NumeroTelefonoColaboradorOutput" id="NumeroTelefonoColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese maximo 8 numeros</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="formulario__mensaje" id="formulario__mensaje" style="margin-bottom: 20px;">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+			</div>
+            <div>
+                <button id="botonEditarInformacion" style="margin-right: 10px;" type="button" class="btn btn-primary validate-before-submit">
+                    Editar Información
+                </button>
+                <a href="/editar_colaborador">
+                    <button type="button" class="btn btn-secondary">Cancelar</button>
+                </a>
+            </div>
+        </form>
+        <br>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modalEditarForm" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalEditarLabel">Editar información del colaborador</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <!-- Contenido del modal -->
+                ¿Estas seguro que deseas editar la información de: <strong>{{ rows[0]['NombresColaborador'] }}</strong>?
+            </div>
+            <div class="modal-footer">                
+                <button type="submit" class="btn btn-primary" onclick="document.getElementById('formEditar').submit()">Editar Información</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const formulario = document.getElementById('formEditar');
+    const inputs = document.querySelectorAll('#formEditar input');
+    let cambiosRealizados = false;
+
+    const expresiones = {
+        cedula: /^[0-9A-Za-z\-]{15}[A-Z]$/, //letras, números y guion   
+        nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
+        apellidos: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
+        salario: /^\d+(\.\d+)?$/, // Solo números y puede tener decimales 
+        telefono: /^\d{8}$/, // 8 números solo números
+        correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
+    };
+
+    const campos = {
+        CedulaColaborador: false,
+        NombresColaborador: false,
+        ApellidosColaborador: false,
+        SalarioColaborador: false,
+        NumeroTelefonoColaborador: false,
+        CorreoColaborador: false,
+        FechaContratacion: false
+    };
+
+    const validarFormulario = (e) => {
+        switch (e.target.name) {
+            case "CedulaColaborador":
+                validarCampo(expresiones.cedula, e.target, 'CedulaColaborador', 'CedulaColaboradorOutput');
+                break;
+            case "NombresColaborador":
+                validarCampo(expresiones.nombre, e.target, 'NombresColaborador', 'NombresColaboradorOutput');
+                break;
+            case "ApellidosColaborador":
+                validarCampo(expresiones.apellidos, e.target, 'ApellidosColaborador', 'ApellidosColaboradorOutput');
+                break;
+            case "SalarioColaborador":
+                validarCampo(expresiones.salario, e.target, 'SalarioColaborador', 'SalarioColaboradorOutput');
+                break;
+            case "NumeroTelefonoColaborador":
+                validarCampo(expresiones.telefono, e.target, 'NumeroTelefonoColaborador', 'NumeroTelefonoColaboradorOutput');
+                break;
+            case "CorreoColaborador":
+                validarCampo(expresiones.correo, e.target, 'CorreoColaborador', 'CorreoColaboradorOutput');
+                break;
+        }
+    };
+
+    const validarCampo = (expresion, input, campo, campoOutput) => {
+        if (expresion.test(input.value)) {
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.remove('formulario__input-error-activo');
+            campos[campo] = true;
+            var campoPost = document.getElementById(campoOutput);
+            campoPost.value = input.value; // Asigna el valor del campo CedulaColaborador al campo CedulaColaboradorOutput
+            cambiosRealizados = true;
+        } else {
+            document.getElementById(`grupo_${campo}`).classList.add('mb-3-incorrecto');
+            document.getElementById(`grupo_${campo}`).classList.remove('mb-3-correcto');
+            document.querySelector(`#grupo_${campo} .formulario__input-error`).classList.add('formulario__input-error-activo');
+            campos[campo] = false;
+        }
+    };
+
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', validarFormulario);
+        input.addEventListener('blur', validarFormulario);
+    });
+
+    document.querySelector('.validate-before-submit').addEventListener('click', (e) => {
+    e.preventDefault();
+    let camposIncompletos = false;
+    
+    for (const campo in campos) {
+        if (campos[campo]) {
+        document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+    } else {
+        document.getElementById('formulario__mensaje').classList.remove('formulario__mensaje-activo');
+    }
+    }
+});
+
+    document.querySelector('.validate-before-submit').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (campos.CedulaColaborador || campos.NombresColaborador || campos.ApellidosColaborador || campos.SalarioColaborador || campos.NumeroTelefonoColaborador || campos.CorreoColaborador) {
+            var modalEditarForm = new bootstrap.Modal(document.getElementById('modalEditarForm'));
+            modalEditarForm.show();
+        } else {
+            document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+        }
+    });
+
+
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (campos.CedulaColaborador && campos.NombresColaborador && campos.ApellidosColaborador && campos.SalarioColaborador && campos.NumeroTelefonoColaborador && campos.CorreoColaborador) {
+            formulario.submit();
+        } else {
+            document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+        }
+    });
+
+    // Función para habilitar y deshabilitar el botón de editar según los cambios en los campos
+    const botonEditarInformacion = document.getElementById('botonEditarInformacion');
+
+    const activarBotonEditar = () => {
+        botonEditarInformacion.disabled = false;
+    };
+
+    const desactivarBotonEditar = () => {
+        botonEditarInformacion.disabled = true;
+    };
+
+    const habilitarBotonEditar = () => {
+        if (cambiosRealizados) {
+            activarBotonEditar();
+        } else {
+            desactivarBotonEditar();
+        }
+    };
+
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', () => {
+            validarFormulario(event);
+            habilitarBotonEditar();
+        });
+    });
+
+    formulario.addEventListener('change', () => {
+        cambiosRealizados = true;
+        habilitarBotonEditar();
+    });
+
+    habilitarBotonEditar();
+</script>
+
+{% endblock %}

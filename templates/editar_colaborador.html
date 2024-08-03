@@ -1,0 +1,71 @@
+{% extends "layoutAdmin.html" %}
+
+{% block title %}
+Editar Colaborador
+{% endblock %}
+
+{% block main %}
+<style>
+    .icono {
+        font-size: 1.5rem; /* Ajusta el tamaño del icono según sea necesario */
+    }
+</style>
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Editar Colaborador</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active"><strong>En esta sección puede buscar a un colaborador y editar su información.</strong></li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Colaboradores
+            </div>
+            <div class="card-body" >
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha de contratación</th>
+                            <th>N0 Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Número telefónico</th>
+                            <th>Estado del Colaborador</th>
+                            <th>Estado Crediticio</th>                        
+                            <th>Editar informacion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in rows %}
+                        <tr>
+                            <td>{{ i.FechaContratacion }} </td>
+                            <td>{{ i.CedulaColaborador }} </td>
+                            <td>{{ i.NombresColaborador }}  </td>
+                            <td>{{ i.ApellidosColaborador }}  </td>
+                            <td>{{ i.NumeroTelefonoColaborador }} </td>
+                            {%if i.EstadoColaborador == "A"%}
+                            <td>Activo</td>
+                            {% else %}
+                            <td>Despedido</td>
+                            {% endif %}
+                            {% if i.EstadoCrediticio == "0" %}
+                            <td>No debe</td>
+                            {% else %}
+                            <td>Debe</td>                            
+                            {% endif %}
+                            <td class="align-middle text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="/editar_colaborador_detalle/{{ i.IdColaborador }}">
+                                        <button class="btn btn-primary fa-solid fa-user-pen icono" type="button"></button>
+                                    </a>
+                                </div>
+                            </td>                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

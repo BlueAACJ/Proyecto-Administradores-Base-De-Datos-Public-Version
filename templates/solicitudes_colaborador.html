@@ -1,0 +1,54 @@
+{% extends "layoutColaborador.html" %}
+
+{% block title %}Solicitudes{% endblock %}
+
+{% block main%} 
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Solicitudes</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Solicitudes de prestamos aprobadas o denegadas</li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Solicitudes Colaborador
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha de Solicitud</th>
+                            <th>Monto Solicitado</th>
+                            <th>Plazo en meses</th>
+                            <th>Cuotas quincenales</th>
+                            <th>Estado Solicitud</th>
+                            <th>Ver Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for i in historial%}
+                        <tr>
+                            <td>{{ i.FechaDeSolicitud.strftime('%d-%m-%Y') if i.FechaDeSolicitud else '' }}</td>
+                            <td>{{i.MontoSolicitado}}</td>
+                            <td>{{i.PlazoDePago}}</td>
+                            <td>{{i.PlazoDePago*2}}</td>
+                            {% if i.EstadoSolicitud == 'E'%}
+                            <td>Espera</td>
+                            <td><a href="/ver_solcitud_colaborador/{{i.FechaDeSolicitud}}/{{i.MontoSolicitado}}/{{i.PlazoDePago}}/{{i.EstadoSolicitud}}/{{cedula}}/{{i.MotivoPrestamo}}"><button class="btn btn-success">Ver Solicitud</button></a></td> 
+                            {% elif i.EstadoSolicitud == 'A' %}
+                            <td>Aceptada</td>
+                            <td><a href="/prestamo_detallado/{{cedula}}/{{i.IdSolicitudesPrestamos}}"><button class="btn btn-success">Ver Préstamo</button></a></td> 
+                            {% elif i.EstadoSolicitud == 'D' %}
+                            <td>Denegada</td>  
+                            <td><a href="/ver_solcitud_colaborador/{{i.FechaDeSolicitud}}/{{i.MontoSolicitado}}/{{i.PlazoDePago}}/{{i.EstadoSolicitud}}/{{cedula}}/{{i.MotivoPrestamo}}"><button class="btn btn-success">Ver Solicitud</button></a></td> 
+                            {% endif %}
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %} 

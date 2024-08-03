@@ -1,0 +1,60 @@
+{% extends "layoutGerente.html" %}
+
+{% block title %}
+Editar Colaborador
+{% endblock %}
+
+{% block main %}
+<style>
+    .icono {
+        font-size: 1.5rem; /* Ajusta el tamaño del icono según sea necesario */
+    }
+</style>
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Editar Administrador</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active"><strong>En esta sección puede buscar a un administrador y editar su información.</strong></li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Administradores
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Sucursal</th>
+                            <th>Editar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in rows %}
+                        {% if i.CedulaAdministrador != "000-000000-0000A"%}
+                        <tr>
+                            <td>{{ i.CedulaAdministrador }} </td>
+                            <td>{{ i.NombresAdministrador }}  </td>
+                            <td>{{ i.ApellidosAdministrador }}  </td>
+                            <td>{{ sucursales[i.IdSucursal - 1 ]['nombreDeSucursal'] }} {{ sucursales[i.IdSucursal - 1]['direccionSucursal'] }}</td>
+                            <td class="align-middle text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="/editar_administrador_detalle/{{i.IdAdministrador}}">
+                                        <button class="btn btn-primary fa-solid fa-user-pen icono"></button>
+                                    </a>
+                                </div>
+                            </td> 
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,223 @@
+
+{%if session.id_administrador and session['cedula_administrador'] == "000-000000-0000A"%}
+    
+    {% extends "layoutGerente.html" %}
+{% endif %}
+{% block title %} Inicio {% endblock%}
+
+{% block main%}
+<main>
+    <div class="container-fluid px-4">
+        <h3 class="mt-4">Dashboard</h3>
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Intereses por Unidad de Negocio esta quincena:
+                    </div>
+                    <div class="card-body"><canvas id="myBarChart" width="100%" height="50"></canvas></div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Número de Colaboradores registrador en el sistema por unidad de negocio:
+                    </div>
+                    <div class="card-body"><canvas id="oilChart" width="100%" height="50"></canvas></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Capital prestado por unidad de negocio esta quincena:
+                    </div>
+                    <div class="card-body"><canvas id="myBarChart2" width="100%" height="25"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Ultimos prestamos registrados:
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Fecha de aprobación</th>
+                            <th>Nombre</th>
+                            <th>Sucursal</th>
+                            <th>Capital</th>
+                            <th>Cuotas</th>
+                            <th>Tasa de Interes</th>
+                            <th>Ver más:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in rows %}
+                        <tr>
+                            <td>{{ i.FechaDeAprobacion }}</td>
+                            <td>{{ i.NombresColaborador }} {{ i.ApellidosColaborador }}</td>
+                            <td>{{ i.nombreDeSucursal }} {{ i.direccionSucursal }}</td>
+                            <td>C$ {{ i.Capital }}</td>
+                            <td>{{ i.Cuotas }}</td>
+                            <td>{{ i.Intereses * 100 }} %</td>
+                            <td><a href="/prestamo_detallado/{{i.CedulaColaborador}}/{{i.IdSolicitudesPrestamos}}"><button class="btn btn-primary">Ver más</button></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+
+{% block javascriptBarras1 %}
+<script>
+
+// Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#292b2c';
+Chart.defaults.global.defaultFontSize = 18;
+
+let Capital = JSON.parse({{ Capital | tojson }})
+let NombresUnidades = JSON.parse({{ Nombres | tojson }})
+
+// Bar Chart Example
+var ctx = document.getElementById("myBarChart2");
+var myLineChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: NombresUnidades,
+    datasets: [{
+        label: "Capital",
+        backgroundColor: "rgba(2,117,216,1)",
+        borderColor: "rgba(2,117,216,1)",
+        data: Capital,
+    }],
+    },
+options: {
+    scales: {
+    xAxes: [{
+        time: {
+            unit: 'money'
+        },
+        gridLines: {
+            display: false
+        },
+        ticks: {
+            maxTicksLimit: 6
+        }
+        }],
+        yAxes: [{
+        ticks: {
+            min: 0,
+            max: 400000,
+            maxTicksLimit: 5
+        },
+        gridLines: {
+            display: true
+        }
+        }],
+    },
+    legend: {
+        display: false
+    }
+    }
+});
+</script>
+{% endblock %}
+
+{% block javascriptGraficaPastel %}
+<script>
+    var oilCanvas = document.getElementById("oilChart");
+Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#292b2c';
+Chart.defaults.global.defaultFontSize = 18;
+
+let numerocolaboradores = JSON.parse({{ numerocolaboradores | tojson }});
+let nombresUnidades = JSON.parse({{ NombresUnidades | tojson }})
+
+var oilData = {
+    labels: nombresUnidades,
+    datasets: [
+        {
+            data: numerocolaboradores,
+            backgroundColor: [
+                "#008000",
+                "#0000FF",
+                "#FFA500",
+                "#800080",
+                "#FF0000"
+            ]
+        }]
+};
+
+var pieChart = new Chart(oilCanvas, {
+    type: 'pie',
+    data: oilData
+});
+</script>
+{% endblock %}
+
+{% block javascriptBarras2 %}
+<script>
+// Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#292b2c';
+Chart.defaults.global.defaultFontSize = 18;
+
+let TotalInteres = JSON.parse({{ TotalInteres | tojson }})
+let nombreUnidadDeNegocioInteres = JSON.parse({{ nombreUnidadDeNegocioInteres | tojson }})
+
+// Bar Chart Example
+var ctx = document.getElementById("myBarChart");
+var myLineChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: nombreUnidadDeNegocioInteres,
+    datasets: [{
+        label: "Intereses",
+        backgroundColor: "rgba(0,255,0)",
+        borderColor: "rgba(0,255,0)",
+        data: TotalInteres,
+    }],
+    },
+options: {
+    scales: {
+    xAxes: [{
+        time: {
+            unit: 'month'
+        },
+        gridLines: {
+            display: false
+        },
+        ticks: {
+            maxTicksLimit: 6
+        }
+        }],
+        yAxes: [{
+        ticks: {
+            min: 0,
+            max: 3000,
+            maxTicksLimit: 5
+        },
+        gridLines: {
+            display: true
+        }
+        }],
+    },
+    legend: {
+        display: false
+    }
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}

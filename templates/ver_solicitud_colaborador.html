@@ -1,0 +1,97 @@
+{% extends "layoutColaborador.html" %}
+
+{% block title %}Generar Solicitud{% endblock %}
+
+{% block main%} 
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Información de solicitud de préstamo</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">información proporcionada por usted para la solicitud</li>
+        </ol>
+        <form method="post" id="SolicitudPrestamo">
+            
+            <h4>Información de la solicitud:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    {% if i['EstadoSolicitud'] == 'E' %}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Usted ya envío una solicitud, espere los resultados.
+                    </div>
+                    {% elif i['EstadoSolicitud'] == 'A' and historialPrestamo['EstadoPrestamo'] == 'A'%}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Su solicitud fue aceptada, tiene un préstamo activo, puede ver los detalles del préstamo.
+                    </div>
+                    {% elif i['EstadoSolicitud'] == 'A' and historialPrestamo['EstadoPrestamo'] == 'C'%}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Aviso!</strong><br>
+                        Su solicitud fue aceptada,su préstamo está cancelado, puede ver los detalles del préstamo.
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="fechaDeSolicitud" class="form-label">Fecha de solicitud:</label>
+                        <input type="text" class="form-control" value="{{i['FehaDeSolicitud']}}"  readonly>
+                    </div>
+                    <div class="mb-3" id="grupo_MontoSolicitado">
+                        <label for="MontoSolicitado" class="form-label" >Monto solicitado C$</label>
+                        <div>
+                            <input type="text" class="form-control" name="MontoSolicitado" id="MontoSolicitado"  
+                                value="{{i['MontoSolicitado']}}" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="grupo_PlazoDePago">
+                        <label for="PlazoDePago" class="form-label">Plazo de pago</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="PlazoDePago" id="PlazoDePago"
+                                value="{{i['PlazoDePago']}}" readonly>
+                            {% if i['PlazoDePago'] == 1 %}
+                            <span class="input-group-text">mese</span>
+                            {% else %}
+                            <span class="input-group-text">meses</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                        <div class="mb-3" id="grupo_MotivoDePrestamo">
+                            <label for="MotivoDePrestamo" class="form-label">Motivo de préstamo:</label>
+                            <div>
+                                <input type="text" class="form-control" name="MotivoDePrestamo" id="MotivoDePrestamo" value="{{i['MotivoPrestamo']}}"
+                                    style="height: 100px;" readonly>
+                            </div>
+                        </div>
+                </div>
+                <!-- Mostrar aviso -->
+                <div class="col-md-6">
+                    {% if i['EstadoSolicitud'] == 'E' %}
+                    <div class="alert alert-warning" role="alert">
+                        {% if dias_exactos < 1 %}
+                        <strong>Aviso!</strong><br>
+                        El administrador puede tardar hasta 3 días en revisión.
+                        {% else %}
+                        <strong>Aviso!</strong><br>
+                        Usted envió su solicitud hace: {{dias_exactos}} dias y {{horas_exactas}}:horas
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            <div>
+                
+                <a href="/solicitudes_colaborador">
+                    <button type="button" style="margin-right: 10px; margin-bottom: 10px;" class="btn btn-danger">Regresar</button>
+                </a>
+
+                {% if i['EstadoSolicitud'] == 'A' %}
+                <a href="/prestamo_detallado/{{cedula}}/{{id_solicitud}}">
+                    <button type="button" style="margin-right: 10px; margin-bottom: 10px;" class="btn btn-success">Ver Detalles Préstamo</button>
+                </a>
+                {% endif %}
+                
+            </div>
+        </form>
+        <br>
+    </div>
+</main>
+<script src="static/js/validacionSolicitudColaborador.js"></script>
+{% endblock %}

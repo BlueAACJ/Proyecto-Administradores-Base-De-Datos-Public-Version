@@ -1,0 +1,21 @@
+# Python
+# Compila los archivos fuente (.py) en una representación de bytes intermedia llamada bytecode, que se almacena en archivos con la extensión .pyc.
+**/__pycache__/
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Credentials and tokens
+credentials.json
+token_gmail_v1.pickle

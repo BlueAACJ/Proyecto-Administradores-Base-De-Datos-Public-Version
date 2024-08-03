@@ -1,0 +1,165 @@
+{% extends "layoutAdmin.html" %}
+
+{% block title %}
+Agregar Colaborador
+{% endblock %}
+
+{% block main %}
+<style>
+      /* Quitar las flechas en navegadores basados en WebKit (Chrome, Safari) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Quitar las flechas en Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: texfield;
+}
+</style>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Agregar Colaborador</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active"><strong>Inserción de los datos del Colaborador</strong></li>
+        </ol>
+        <form method="post" id="formAgregar">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+            <h4>Información del Colaborador:</h4>
+            <div class="row">
+                <!-- Primera columna -->
+                <div class="col-md-6">
+                    <div class="mb-3" id="grupo_FechaContratacion">
+                        <label for="fechaContratacion" class="form-label">Fecha de contratación:</label>
+                        <div>
+                            <input type="date" class="form-control" name="FechaContratacion" id="FechaContratacion" autocomplete="nope" required onchange="updateTipoContrato()">
+                            <input type="hidden" name="FechaContratacionOutput" id="FechaContratacionOutput">
+                        </div>
+                        <p class="formulario__input-error">No se aceptan fechas mayores que la actual</p>
+                    </div>
+                    
+                    <div class="mb-3" id="grupo_CedulaColaborador">
+                        <label for="CedulaColaborador" class="form-label" >Número de cédula:</label>
+                        <div>
+                            <input type="text" class="form-control" name="CedulaColaborador" id="CedulaColaborador" autocomplete="nope" placeholder="xxx-xxxxxx-xxxxx" required>
+                            <input type="hidden" name="CedulaColaboradorOutput" id="CedulaColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Los guiones se escriben automaticamente en el formato "000-000000-0000X"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_NombresColaborador">
+                        <label for="NombresColaborador" class="form-label">Nombres:</label>
+                        <div>
+                            <input type="text" class="form-control" name="NombresColaborador" id="NombresColaborador" placeholder="Nombres" autocomplete="nope"
+                                oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="NombresColaboradorOutput" id="NombresColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un nombre valido "Solo letras"</p>
+                    </div>
+                    <div class="mb-3" id="grupo_ApellidosColaborador">
+                        <label for="ApellidosColaborador" class="form-label">Apellidos:</label>
+                        <div>
+                            <input type="text" class="form-control" name="ApellidosColaborador" id="ApellidosColaborador" placeholder="Apellidos" autocomplete="nope"
+                                oninput="this.value = this.value.toUpperCase()" required>
+                            <input type="hidden" name="ApellidosColaboradorOutput" id="ApellidosColaboradorOutput" >
+                        </div>
+                        <p class="formulario__input-error">Ingrese un apellido valido "Solo letras"</p>
+                    </div>
+                </div>
+                <!-- Segunda columna -->
+                <div class="col-md-6">
+                    <!--Tipo de contrato va a retornar value=F para Fijo y value = T para temporales-->
+                    <div class="mb-3">
+                        <label for="tipoContrato" class="form-label">Tipo de contrato:</label>
+                        <select class="form-select" name="TipoDeContrato" id="TipoDeContrato">
+                            {% if tipo_contrato == 'D' %}
+                                <option value="D" selected>Determinado</option>
+                                <option value="I" disabled>Indeterminado</option>
+                            {% else %}
+                                <option value="D" disabled>Determinado</option>
+                                <option value="I" selected>Indeterminado</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3" id="grupo_NumeroTelefonoColaborador">
+                        <label for="NumeroTelefonoColaborador" class="form-label">Teléfono (+505):</label>
+                        <div>
+                            <input type="number" class="form-control" name="NumeroTelefonoColaborador" id="NumeroTelefonoColaborador" autocomplete="nope" placeholder="88888888" required>
+                            <input type="hidden" name="NumeroTelefonoColaboradorOutput" id="NumeroTelefonoColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese 8 numeros</p>
+                    </div>
+
+                    <div class="mb-3" id="grupo_CorreoColaborador">
+                        <label for="CorreoColaborador" class="form-label">Correo electrónico:</label>
+                        <div>
+                            <input type="email" class="form-control" name="CorreoColaborador" id="CorreoColaborador" autocomplete="nope"placeholder="usuario@gmail.com" required>
+                            <input type="hidden" name="CorreoColaboradorOutput" id="CorreoColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese un correo valido</p>
+                    </div>
+                    <div class="mb-3" id="grupo_SalarioColaborador">
+                        <label for="SalarioColaborador" class="form-label">Salario Mensual C$:</label>
+                        <div>
+                            <input type="text" class="form-control" name="SalarioColaborador" id="SalarioColaborador" placeholder="00000" autocomplete="nope" onkeyup="moneda(this);" onkeydown="return decimal(event, this)" required>
+                            <input type="hidden" name="SalarioColaboradorOutput" id="SalarioColaboradorOutput">
+                        </div>
+                        <p class="formulario__input-error">Ingrese solo numeros</p>
+                    </div>
+                    <!--Te van a retornar el numero (value = numero) que equivale el IdSucursal en la base de datos-->
+                    <div class="mb-3">
+                    <label for="sucursal" class="form-label">Sucursal:</label>
+                        <select class="form-select" type="text" name="IdSucursal">
+                            <option>{{nombre_sucursal}} {{direccion_sucursal}}</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <br>
+            <div class="formulario__mensaje" id="formulario__mensaje" style="margin-bottom: 20px;">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+			</div>
+            <div>
+                <button type="button" style="margin-right: 10px;" class="btn btn-success validate-before-submit">
+                    Agregar Colaborador
+                </button>
+
+                <a href="/index">
+                    <button type="button" class="btn btn-secondary">Cancelar</button>
+                </a>
+            </div>
+        </form>
+        <br>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modalAgregarForm" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalAgregarLabel">Añadir información del colaborador</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <!-- Contenido del modal -->
+                ¿Estas seguro que deseas añadir al Colaborador?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('formAgregar').submit()">Agregar Colaborador</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+
+
+<script src="static/js/validacionAgregarColaborador.js"></script>
+<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+{% endblock %}

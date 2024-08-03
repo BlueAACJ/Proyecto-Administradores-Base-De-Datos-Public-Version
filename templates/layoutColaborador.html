@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="/static/style/style.css" />
+
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- Icono del encabezado de la pagina -->
+    <link rel="icon" type="image/.jpg" href="/static/images/GrupoTalse.jpg"/>
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="...">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="..."></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="..."></script>
+</head>
+<body class="sb-nav-fixed">
+    {% if session.id_colaborador %}
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        
+        <a class="navbar-brand ps-3" href="/index">GrupoTalse</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <ul class="navbar-nav ms-auto me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="notificaciones" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell fa-fw"></i>
+                    <!--Cantidad de notificaciones-->
+                    <span class="badge bg-danger">{{ notificacionesIndex[2] }}</span>
+                </a>
+                <!-- Notificaciones -->
+                <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="notificaciones">
+                    <li>
+                        <h6 class="dropdown-header">
+                            Centro de notificaciones
+                        </h6>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        {% if notificacionesIndex[1] %}
+                        <a class="dropdown-item d-flex align-items-center" href="/solicitudes_colaborador">
+                            <div class="dropdown-list-image me-3">
+                                <img class="rounded-circle" src="/static/images/GrupoTalse.ico" alt="..." width="30px">
+                                <div class="status-indicator bg-success"></div>
+                            </div>
+                            <div class="font-weight-bold">
+                                <div class="text-truncate">Su ultima solicitud fue: {{ notificacionesIndex[1] }}</div>
+                            </div>
+                        </a>
+                        {% endif %}
+                        {% if notificacionesIndex[0] %}
+                        <a class="dropdown-item d-flex align-items-center" href="/prestamo_activo_colaborador/{{session['CedulaColaborador']}}">
+                            <div class="dropdown-list-image me-3">
+                                <img class="rounded-circle" src="/static/images/GrupoTalse.ico" alt="..." width="30px">
+                                <div class="status-indicator bg-success"></div>
+                            </div>
+                            <div class="font-weight-bold">
+                                <div class="text-truncate">Su proxima Cuota es: </div>
+                                <div class="small text-gray-500">Fecha: {{ notificacionesIndex[0] }} </div>
+                            </div>
+                        </a>
+                        {% endif %}
+                        {% if notificacionesIndex[2] == 0 %}
+                        <a class="dropdown-item d-flex align-items-center" href="#">
+                            <div class="dropdown-list-image me-3">
+                                <img class="rounded-circle" src="/static/images/GrupoTalse.ico" alt="..." width="30px">
+                                <div class="status-indicator bg-success"></div>
+                            </div>
+                            <div class="font-weight-bold">
+                                <div class="text-truncate">No hay notificaciones pendientes</div>
+                            </div>
+                        </a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="me-2 d-none d-lg-inline text-gray-600 small">{{session['usuario_colaborador']}} </span>
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="/contrasenia_colaborador">Perfil</a></li>
+                    <li><a class="dropdown-item" href="/logout">Salir</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <!--Solicitudes de prestamo-->
+                        <div class="sb-sidenav-menu-heading">Solicitudes Prestamo</div>
+                        <a class="nav-link" href="/generar_solicitud">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-square-plus"></i></div>
+                            Generar Solicitud
+                        </a>
+                        <a class="nav-link" href="/solicitudes_colaborador">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-envelope"></i></div>
+                            Historial Solicitudes
+                        </a>
+
+                        <!--Historial de prestamos-->
+                        <div class="sb-sidenav-menu-heading">Historial Prestamos</div>
+                        <a class="nav-link" href="/prestamo_activo_colaborador/{{session['CedulaColaborador']}}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-folder"></i></div>
+                            Prestamo Activo
+                        </a>
+
+                        <!--Configuracion de Perfil-->
+                        <div class="sb-sidenav-menu-heading">Configuracion de Perfil</div>
+                        <a class="nav-link" href="/contrasenia_colaborador">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user fa-fw"></i></div>
+                            Cambiar Contraseña
+                        </a>
+                    </div>        
+                </div>    
+            </nav>
+        </div>
+        {% else %}
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <a class="navbar-brand ps-3" href="/">GrupoTalse</a>
+        </nav>
+        {% endif %}
+        <div id="layoutSidenav_content">
+            {% block main %}
+            {% endblock %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/static/js/datatables-simple-demo.js"></script>
+    <script src="/static/js/setRoles.js"></script>
+    <script src="/static/js/sideBar.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{% if session.id_administrador and session['cedula_administrador'] != "000-000000-0000A" %}
+
+    {% extends "layoutAdmin.html" %}
+
+{%elif session.id_administrador and session['cedula_administrador'] == "000-000000-0000A"%}
+
+    {% extends "layoutGerente.html"%}
+    
+{%elif session.id_colaborador%}
+
+    {% extends "layoutColaborador.html" %}
+
+{% endif %}
+
+{% block title %}
+Prestamo Detallado
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Detalle de Prestamo</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Prestamo administrado por GrupoTalse</li>
+        </ol>
+
+        <div class="card mb-4">
+            <div class="card-header row">
+                <div class="col-md-6 ">
+                    <ul class="list-unstyled">
+                        <li><b>Colaborador:</b> {{ rows[0]['NombreCompleto'] }}</li>
+                        <li><b>Plazo de Pago:</b> {{ rows[0]['PlazoDePago_Meses'] }} meses </li>
+                        <li><b>Sucursal:</b> {{ rows[0]['NombreSucursal'] }}</li>
+                        <li><b>Direccion:</b> {{ rows[0]['DireccionSucursal'] }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-unstyled">
+                        <li><b>Capital:</b> C$ {{ rows[0]['Capital'] }}</li>
+                        <li><b>Tasa de interes quincenal:</b> {{ rows[0]['Intereses'] * 100 }}%</li>
+                        <li><b>Interes acumulado:</b>C$ {{ datos[-1]['InteresAcumulado']}}                        </li>
+                        <li><b>Cuotas quincenales:</b> {{ rows[0]['Cuotas'] }}</li>
+                        {% if rows[0]['EstadoPrestamo'] == 'C'%}
+                        <li><b>Estado:</b> Cancelado</li>
+                        {% else %}
+                        <li><b>Estado:</b> Activo</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="card-header row">
+                    <!-- Contenedor de botones -->
+                    <div class="col-md-6">
+                        <a href="/download_pdf_prestamo_detallado/{{ rows[0]['IdPrestamo'] }}, {{ rows[0]['CedulaColaborador'] }}"><button class="btn btn-success mb-4">Generar Reporte</button></a>
+                    </div>
+                    <div class="col-md-6">
+                        {% if session['type'] == 'admin' and rows[0]['EstadoPrestamo'] == 'A' %}
+                            <a href="/download_pdf_contrato/{{ rows[0]['IdPrestamo'] }}/{{ rows[0]['IdColaborador'] }}/{{ rows[0]['IdSolicitudesPrestamos'] }}">
+                                <button class="btn btn-success mb-4">Generar Contrato</button>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>                
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>  
+                            <th>Cuota</th>
+                            <th>Fecha de Pago</th>
+                            <th>Monto</th>
+                            <th>Capital</th>
+                            <th>Interes</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>C${{datos[0]['PrimerSaldo']}}</td>
+                        </tr>
+                        {% for dato in datos %}
+                            {% if dato.EstadoCuota == 'C' or dato.EstadoCuota == 'D'%}
+                                <tr class="table-success">
+                            {% else %}
+                                <tr>
+                            {% endif %}
+                                    <td>{{ dato.contador }}</td>
+                                    <td>{{ dato.Fecha }}</td>
+                                    <td>C${{ dato.Pagos }}</td>
+                                    <td>C${{ dato.Capital }}</td>
+                                    <td>C${{ dato.Interes }}</td>
+                                    <td>C${{ dato.Saldo }}</td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>                    
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

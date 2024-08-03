@@ -1,0 +1,93 @@
+{% extends "layoutAdmin.html" %} 
+{% block title %} 
+login 
+{% endblock %} 
+
+{% block main %}
+
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+    <!-- Flash de aviso al usuario sobre llenar el formulario -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" role="alert" id="div_flash" >
+            <h2 class="text-center font-weight-light my-4">{{ message }}</h2>
+            <i class="fa-solid fa-square-xmark fa-2xl espacio" style="color: #ff0000;" type="button" value=&#10006 onclick="removeFlash()" class="btn btn-primary" class="fas fa-greater-than"></i>
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+        <main >
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card sombra border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                        
+                                <h4 class="text-center font-weight-light my-4">Sistema de Administración de Préstamos</h4>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <img class="mx-auto" src="static/images/undraw_profile.svg" alt="" width="150" height="150" style="display: block; margin: 0 auto;">
+                                </div>
+                                <br>
+                                
+                                <!--Cambios del día 12 de abril -->
+                                <form id="loginForm" action="/" method="post">
+
+                                    <!-- Campo oculto para el rol, lo necesitamos para poder manejar los roles 
+                                    en funcion login 
+                                    -->
+                                    <input type="hidden" name="rol" id="rolInput" value="colaborador"> 
+
+                                    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="margin-bottom: 10px;">
+                                        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                                        <div class="navbar-nav">
+                                            <a id="colaboradorLink" class="nav-link active" aria-current="page" onclick="setRole('colaborador')">Colaborador</a>
+                                            <a id="administradorLink" class="nav-link" onclick="setRole('administrador')">Administrador</a>
+                                        </div>
+                                        </div>
+                                    </nav>
+                                    <div id="camposColaborador" style="display: block;">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputCedula" name="cedula" placeholder="Cedula" autocomplete="nope"/>
+                                            <label for="inputCedula">Cedula</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputPasswordColaborador" type="password" name="contrasena_colaborador" placeholder="Contraseña" autocomplete="nope"/>
+                                            <label for="inputPasswordColaborador">Contraseña</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="camposAdministrador" style="display: none;">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputUsuario" name="usuario" placeholder="Introduzca usuario" autocomplete="nope"/>
+                                            <label for="inputUsuario">Usuario</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputPasswordAdministrador" type="password" name="contrasena_administrador" placeholder="Contraseña administrador" autocomplete="nope"/>
+                                            <label for="inputPasswordAdministrador">Contraseña</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex mt-4 mb-0">
+                                        <button class="btn btn-primary mx-auto" type="submit" id="iniciar_sesion">Iniciar sesión</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+function removeFlash() {
+    const element = document.getElementById('div_flash');
+    element.remove();
+}
+</script>
+
+{% endblock %}
